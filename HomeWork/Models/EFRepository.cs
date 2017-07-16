@@ -42,5 +42,10 @@ namespace HomeWork.Models
 			ObjectSet.Remove(entity);
 		}
 
-	}
+        public virtual void DeleteByUpdateIsDelete(T entity)
+        {
+            ObjectSet.Remove(entity);
+        }
+
+    }
 }

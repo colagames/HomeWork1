@@ -9,7 +9,7 @@ namespace HomeWork.Models
 
         public IQueryable<客戶資料> get前10筆資料()
         {
-            return this.All().Take(10);
+            return this.All().Where(p => p.是否已刪除 !=true).Take(10);
         }
 
         public 客戶資料 Find(int id)

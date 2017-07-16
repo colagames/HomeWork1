@@ -13,9 +13,11 @@ namespace HomeWork.Controllers
             return View();
         }
 
+
+        [Route("你現在在看的是about")]
         public ActionResult About()
         {
-            ViewBag.Message = "Your application description page.";
+            ViewBag.Message = "正在看About";
 
             return View();
         }

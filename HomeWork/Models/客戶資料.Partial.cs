@@ -37,7 +37,9 @@ namespace HomeWork.Models
         [StringLength(250, ErrorMessage="欄位長度不得大於 250 個字元")]
         [DataType(DataType.EmailAddress,ErrorMessage = "請輸入正確的電子信箱地址")]
         public string Email { get; set; }
-    
+
+        public Nullable<bool> 是否已刪除 { get; set; }
+
         public virtual ICollection<客戶銀行資訊> 客戶銀行資訊 { get; set; }
         public virtual ICollection<客戶聯絡人> 客戶聯絡人 { get; set; }
     }

@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using HomeWork.Models;
+using Day2MVCDemo.Models.ViewModels;
 
 namespace HomeWork.Controllers
 {
@@ -20,6 +21,9 @@ namespace HomeWork.Controllers
             var 客戶聯絡人 = db.客戶聯絡人.Include(客 => 客.客戶資料);
             return View(客戶聯絡人.ToList());
         }
+
+       
+
 
         // GET: Contarct/Details/5
         public ActionResult Details(int? id)

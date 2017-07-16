@@ -1,4 +1,6 @@
-﻿using HomeWork.Models;
+﻿using Day2MVCDemo.Models.ViewModels;
+using HomeWork.Attributes;
+using HomeWork.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -9,25 +11,43 @@ using System.Web.Mvc;
 
 namespace HomeWork.Controllers
 {
-    public class CustomController : Controller
+    public class CustomController : BaseController
     {
+        //丟到BaseController了
+        //客戶資料Repository repo = RepositoryHelper.Get客戶資料Repository();
 
-        客戶資料Repository repo = RepositoryHelper.Get客戶資料Repository();
-
-  
+        [CheckKeyAttribute]
         public ActionResult Index()
         {
             var data = repo.get前10筆資料();
             return View(data);
         }
 
+
+      
         [HttpPost]
         public ActionResult Index(string keyword)
         {
             var data = repo.FindByKeyWord(keyword);
             return View(data);
         }
+        [HttpPost]
+        public ActionResult BatchUpdate(BatchUpdateVM[] data)
+        {
+            if (ModelState.IsValid) {
 
+                foreach (var item in data) {
+
+                    var aa = repo.Find(item.Id);
+                    aa.傳真 = item.傳真;
+                    aa.電話 = item.電話;
+                }
+                repo.UnitOfWork.Commit();
+                return RedirectToAction("Index");
+            }
+            ViewData.Model = repo.get前10筆資料();
+            return View("Index");
+        }
         public ActionResult Create()
         {    
             return View();
@@ -49,8 +69,21 @@ namespace HomeWork.Controllers
         public ActionResult Delete(int? Id)
         {
             客戶資料 l_data = repo.Find(Id.Value);
-            repo.Delete(l_data);
-            repo.UnitOfWork.Commit();
+            //repo.Delete(l_data);
+            //repo.UnitOfWork.Commit();
+            l_data.是否已刪除 = true;
+
+            if (TryUpdateModel(l_data, new string[] { "是否已刪除" }))
+            {
+                //var db = repo.UnitOfWork.Context;
+                //db.Entry(product).State = EntityState.Modified;
+                //db.SaveChanges();
+
+                repo.UnitOfWork.Commit();
+
+                return RedirectToAction("Index");
+            }
+
             return RedirectToAction("Index");
         }
 
@@ -74,13 +107,19 @@ namespace HomeWork.Controllers
         // 詳細資訊，請參閱 http://go.microsoft.com/fwlink/?LinkId=317598。
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit( 客戶資料 product)
+        public ActionResult Edit( int Id)
         {
-            if (ModelState.IsValid)
+
+            var product = repo.Find(Id);
+
+            if (TryUpdateModel(product,new string[] { "電話", "地址" }))
             {
-                var db = repo.UnitOfWork.Context;
-                db.Entry(product).State = EntityState.Modified;
-                db.SaveChanges();
+                //var db = repo.UnitOfWork.Context;
+                //db.Entry(product).State = EntityState.Modified;
+                //db.SaveChanges();
+
+                repo.UnitOfWork.Commit();
+
                 return RedirectToAction("Index");
             }
             return View(product);
